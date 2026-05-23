@@ -1,0 +1,69 @@
+{
+    "stations": {
+        "LAS-01": {
+            "name": "Stasiun Las 1",
+            "worker": "Ahmad Fauzi",
+            "uid": "A1B2C3D4",
+            "status": "safe",
+            "machine": "ON",
+            "last_update": "2026-05-19T15:44:16.602612",
+            "apd_status": {
+                "welding_helmet": true,
+                "face_shield": true,
+                "safety_glasses": true
+            }
+        }
+    },
+    "incidents": [
+        {
+            "id": "INC-001",
+            "time": "2026-05-19 15:00:38",
+            "station": "LAS-01",
+            "worker": "Ahmad Fauzi",
+            "uid": "A1B2C3D4",
+            "type": "Pelindung Wajah Tidak Terdeteksi",
+            "severity": "medium",
+            "snapshot": "/snapshots/incident_LAS-01_20260519_150038.jpg"
+        },
+        {
+            "id": "INC-002",
+            "time": "2026-05-19 15:03:06",
+            "station": "LAS-01",
+            "worker": "Ahmad Fauzi",
+            "uid": "A1B2C3D4",
+            "type": "Pelindung Wajah Tidak Terdeteksi",
+            "severity": "medium",
+            "snapshot": "/snapshots/incident_LAS-01_20260519_150306.jpg"
+        },
+        {
+            "id": "INC-003",
+            "time": "2026-05-19 15:03:52",
+            "station": "LAS-01",
+            "worker": "Ahmad Fauzi",
+            "uid": "A1B2C3D4",
+            "type": "Pelindung Wajah Tidak Terdeteksi",
+            "severity": "medium",
+            "snapshot": "/snapshots/incident_LAS-01_20260519_150352.jpg"
+        },
+        {
+            "id": "INC-004",
+            "time": "2026-05-19 15:06:32",
+            "station": "LAS-01",
+            "worker": "Ahmad Fauzi",
+            "uid": "A1B2C3D4",
+            "type": "Pelindung Wajah Tidak Terdeteksi",
+            "severity": "medium",
+            "snapshot": "/snapshots/incident_LAS-01_20260519_150632.jpg"
+        },
+        {
+            "id": "INC-005",
+            "time": "2026-05-19 15:14:42",
+            "station": "LAS-01",
+            "worker": "Ahmad Fauzi",
+            "uid": "A1B2C3D4",
+            "type": "Pelindung Wajah Tidak Terdeteksi",
+            "severity": "medium",
+            "snapshot": "/snapshots/incident_LAS-01_20260519_151442.jpg"
+        }
+    ]
+}
