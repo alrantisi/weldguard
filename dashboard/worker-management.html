@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WeldGuard IoT — Manajemen Pekerja</title>
+<meta name="description" content="Database RFID operator las dan manajemen akses mesin.">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <img src="assets/iot_logo.png" alt="WeldGuard Logo">
+    <div class="sidebar-logo-text"><h1>WeldGuard</h1><p>IoT Safety System</p></div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Menu Utama</div>
+    <a class="nav-item" href="index.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Overview</a>
+    <a class="nav-item" href="live-monitoring.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 10l4.553-2.069A1 1 0 0121 8.87v6.26a1 1 0 01-1.447.9L15 14"/><rect x="1" y="6" width="15" height="12" rx="2"/></svg>Live Monitoring
+      <span class="nav-badge">2</span></a>
+    <a class="nav-item" href="incident-log.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Log Insiden
+      <span class="nav-badge">8</span></a>
+    <a class="nav-item active" href="worker-management.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>Manajemen Pekerja</a>
+  </div>
+  <div class="sidebar-footer">
+    <div class="sidebar-clock" id="clock">00:00:00</div>
+    <div class="sidebar-date" id="clock-date">Memuat...</div>
+    <div class="live-indicator"><span class="live-dot"></span> MQTT CONNECTED</div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main-wrapper">
+  <header class="topbar">
+    <div>
+      <div class="topbar-title">👷 Manajemen Pekerja — RFID Directory</div>
+      <div class="topbar-subtitle">Database operator dan kontrol akses mesin las</div>
+    </div>
+    <div class="topbar-spacer"></div>
+    <button class="topbar-btn" onclick="openModal('modal-scan')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      Simulasi Scan RFID
+    </button>
+    <button class="topbar-btn primary" onclick="openModal('modal-add-worker')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Tambah Operator
+    </button>
+  </header>
+
+  <main class="content">
+
+    <!-- KPI ROW -->
+    <div class="grid-4" style="margin-bottom:24px;">
+      <div class="kpi-card cyan" style="padding:16px;">
+        <div class="kpi-icon cyan" style="width:36px;height:36px;margin-bottom:10px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+        <div class="kpi-value" style="font-size:1.8rem;">8</div>
+        <div class="kpi-label">Total Operator</div>
+      </div>
+      <div class="kpi-card green" style="padding:16px;">
+        <div class="kpi-icon green" style="width:36px;height:36px;margin-bottom:10px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="kpi-value" style="font-size:1.8rem;">5</div>
+        <div class="kpi-label">Sertifikat Valid</div>
+      </div>
+      <div class="kpi-card red" style="padding:16px;">
+        <div class="kpi-icon red" style="width:36px;height:36px;margin-bottom:10px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <div class="kpi-value" style="font-size:1.8rem;">1</div>
+        <div class="kpi-label">Sertifikat Kadaluarsa</div>
+      </div>
+      <div class="kpi-card orange" style="padding:16px;">
+        <div class="kpi-icon orange" style="width:36px;height:36px;margin-bottom:10px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+        <div class="kpi-value" style="font-size:1.8rem;">1</div>
+        <div class="kpi-label">Akses Diblokir</div>
+      </div>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="grid-2" style="align-items:start;">
+
+      <!-- WORKER TABLE -->
+      <div>
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="section-heading" style="margin-bottom:0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            Direktori Operator RFID
+          </h2>
+        </div>
+        <div class="filter-bar" style="margin-bottom:12px;">
+          <div class="search-input-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="search-input" placeholder="Cari nama atau departemen..." id="search-worker" oninput="filterWorkers()">
+          </div>
+          <select class="filter-select" id="filter-worker-status" onchange="filterWorkers()">
+            <option value="">Semua Status</option>
+            <option value="active">Aktif</option>
+            <option value="expired">Kadaluarsa</option>
+            <option value="suspended">Diblokir</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Operator</th>
+                <th>RFID UID</th>
+                <th>Departemen</th>
+                <th>Sertifikat</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="worker-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- CERT PIE CHART -->
+        <div>
+          <h2 class="section-heading">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 118 2.83"/><path d="M22 12A10 10 0 0012 2v10z"/></svg>
+            Distribusi Status Sertifikasi
+          </h2>
+          <div class="card" style="padding:16px;">
+            <div class="chart-container" style="height:200px;">
+              <canvas id="certChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- RECENT RFID SCANS -->
+        <div>
+          <h2 class="section-heading">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            Log Scan RFID Terkini
+          </h2>
+          <div class="card" style="padding:16px;display:flex;flex-direction:column;gap:10px;" id="rfid-log">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- EXPIRING CERTS -->
+        <div>
+          <h2 class="section-heading">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Perhatian — Sertifikat Segera Berakhir
+          </h2>
+          <div class="card" style="padding:16px;">
+            <div class="alert-banner danger" style="margin-bottom:10px;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <div class="alert-text"><strong>Dodi Hartono</strong> — Sertifikat kadaluarsa 1 Jun 2025. Akses dicabut otomatis.</div>
+            </div>
+            <div class="alert-banner warning">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <div class="alert-text"><strong>Bambang Setyo</strong> — Sertifikat berakhir 20 Des 2025 (55 hari lagi).</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ADD WORKER MODAL -->
+<div class="modal-overlay" id="modal-add-worker">
+  <div class="modal" style="max-width:500px;">
+    <div class="modal-header">
+      <div><div class="modal-title">➕ Tambah Operator Baru</div><div class="modal-subtitle">Hubungkan kartu RFID dengan data pekerja</div></div>
+      <button class="modal-close" data-close-modal="modal-add-worker">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="form-group"><label class="form-label">Nama Lengkap</label><input type="text" class="form-input" placeholder="Nama operator..."></div>
+    <div class="form-group"><label class="form-label">RFID UID</label><input type="text" class="form-input" placeholder="Misal: A1B2C3D4" style="font-family:monospace;"></div>
+    <div class="form-group"><label class="form-label">Departemen</label>
+      <select class="form-input"><option>Las Struktural</option><option>Las Pipa</option><option>Las Otomotif</option><option>Las Kapal</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Masa Berlaku Sertifikasi</label><input type="date" class="form-input"></div>
+    <div class="form-group"><label class="form-label">Status Akses</label>
+      <select class="form-input"><option>Aktif</option><option>Diblokir</option></select>
+    </div>
+    <div class="flex gap-2">
+      <button class="btn btn-primary" onclick="showToast('Operator berhasil ditambahkan!','success');closeModal('modal-add-worker')">Simpan Operator</button>
+      <button class="btn btn-secondary" data-close-modal="modal-add-worker">Batal</button>
+    </div>
+  </div>
+</div>
+
+<!-- RFID SCAN MODAL -->
+<div class="modal-overlay" id="modal-scan">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header">
+      <div><div class="modal-title">📡 Simulasi Scan RFID</div><div class="modal-subtitle">Pilih kartu RFID untuk disimulasikan</div></div>
+      <button class="modal-close" data-close-modal="modal-scan">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div id="scan-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;"></div>
+    <button class="btn btn-secondary" data-close-modal="modal-scan">Tutup</button>
+  </div>
+</div>
+
+<!-- WORKER DETAIL MODAL -->
+<div class="modal-overlay" id="modal-worker-detail">
+  <div class="modal" style="max-width:460px;">
+    <div class="modal-header">
+      <div><div class="modal-title" id="wd-title">Detail Operator</div><div class="modal-subtitle" id="wd-sub">—</div></div>
+      <button class="modal-close" data-close-modal="modal-worker-detail">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div id="wd-body"></div>
+    <div class="flex gap-2" style="margin-top:16px;">
+      <button id="wd-toggle-btn" class="btn btn-danger btn-sm">Cabut Akses</button>
+      <button class="btn btn-secondary btn-sm" data-close-modal="modal-worker-detail">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="js/main.js"></script>
+<script>
+const RF_ID_LOG = [
+  { time:'22:01:15', worker:'Ahmad Fauzi',    uid:'A1B2C3D4', station:'LAS-01', result:'granted' },
+  { time:'21:58:33', worker:'Bambang Setyo',  uid:'E5F6G7H8', station:'LAS-02', result:'granted' },
+  { time:'21:55:47', worker:'Dodi Hartono',   uid:'M3N4O5P6', station:'LAS-03', result:'denied' },
+  { time:'21:50:10', worker:'Candra Wijaya',  uid:'I9J0K1L2', station:'LAS-03', result:'granted' },
+  { time:'21:44:02', worker:'Eko Prasetyo',   uid:'Q7R8S9T0', station:'LAS-05', result:'granted' },
+];
+
+function buildWorkerRow(w) {
+  const days = Math.ceil((new Date(w.cert) - new Date()) / 86400000);
+  const certColor = w.status === 'expired' ? 'var(--red)' : days < 90 ? 'var(--yellow)' : 'var(--green)';
+  const statusBadge = {
+    active:    '<span class="badge safe">Aktif</span>',
+    expired:   '<span class="badge danger">Kadaluarsa</span>',
+    suspended: '<span class="badge warning">Diblokir</span>',
+  }[w.status];
+  return `<tr data-name="${w.name.toLowerCase()}" data-dept="${w.dept.toLowerCase()}" data-status="${w.status}">
+    <td>
+      <div class="flex items-center gap-2">
+        <div class="avatar" style="background:${w.color}22;color:${w.color};">${w.avatar}</div>
+        <div><div class="fs-sm fw-bold text-primary">${w.name}</div><div style="font-size:0.7rem;color:var(--text-muted);">${w.dept}</div></div>
+      </div>
+    </td>
+    <td class="mono" style="color:var(--cyan);">${w.uid}</td>
+    <td class="fs-sm">${w.dept}</td>
+    <td><span style="font-family:monospace;font-size:0.78rem;color:${certColor};">${w.cert}</span></td>
+    <td>${statusBadge}</td>
+    <td>
+      <div class="flex gap-2">
+        <button class="icon-btn" title="Detail" onclick="showWorkerDetail('${w.uid}')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+        ${w.status !== 'suspended'
+          ? `<button class="icon-btn danger" title="Blokir Akses" onclick="toggleAccess('${w.uid}', '${w.name}', 'suspend')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+             </button>`
+          : `<button class="icon-btn success" title="Aktifkan Akses" onclick="toggleAccess('${w.uid}','${w.name}','restore')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+             </button>`
+        }
+      </div>
+    </td>
+  </tr>`;
+}
+
+window.filterWorkers = () => {
+  const q = document.getElementById('search-worker').value.toLowerCase();
+  const s = document.getElementById('filter-worker-status').value;
+  document.querySelectorAll('#worker-tbody tr').forEach(row => {
+    const matchQ = row.dataset.name.includes(q) || row.dataset.dept.includes(q);
+    const matchS = !s || row.dataset.status === s;
+    row.style.display = matchQ && matchS ? '' : 'none';
+  });
+};
+
+window.toggleAccess = (uid, name, action) => {
+  const msg = action === 'suspend'
+    ? `Akses mesin ${name} (${uid}) dicabut!`
+    : `Akses mesin ${name} (${uid}) dipulihkan!`;
+  showToast(msg, action === 'suspend' ? 'danger' : 'success');
+};
+
+window.showWorkerDetail = (uid) => {
+  const w = WORKERS.find(x => x.uid === uid);
+  if (!w) return;
+  document.getElementById('wd-title').textContent = w.name;
+  document.getElementById('wd-sub').textContent = `${w.dept} · UID: ${w.uid}`;
+  const days = Math.ceil((new Date(w.cert) - new Date()) / 86400000);
+  document.getElementById('wd-body').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:0.85rem;">
+      <div class="card" style="padding:12px;"><div class="text-muted fs-sm">RFID UID</div><div class="font-mono text-orange" style="margin-top:4px;">${w.uid}</div></div>
+      <div class="card" style="padding:12px;"><div class="text-muted fs-sm">Departemen</div><div class="text-primary" style="margin-top:4px;">${w.dept}</div></div>
+      <div class="card" style="padding:12px;"><div class="text-muted fs-sm">Sertifikat Berakhir</div><div style="margin-top:4px;color:${days<0?'var(--red)':days<90?'var(--yellow)':'var(--green)'};">${w.cert}</div></div>
+      <div class="card" style="padding:12px;"><div class="text-muted fs-sm">Status Akses</div><div style="margin-top:4px;">${{active:'<span class="badge safe">Aktif</span>',expired:'<span class="badge danger">Kadaluarsa</span>',suspended:'<span class="badge warning">Diblokir</span>'}[w.status]}</div></div>
+    </div>`;
+  openModal('modal-worker-detail');
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Render table
+  const tbody = document.getElementById('worker-tbody');
+  WORKERS.forEach(w => tbody.innerHTML += buildWorkerRow(w));
+
+  // RFID log
+  const rfidLog = document.getElementById('rfid-log');
+  RF_ID_LOG.forEach(r => {
+    rfidLog.innerHTML += `
+      <div class="flex items-center gap-2" style="padding:8px;background:var(--bg-card-alt);border-radius:var(--radius-sm);">
+        <span class="font-mono" style="font-size:0.7rem;color:var(--text-muted);min-width:48px;">${r.time}</span>
+        <div class="avatar" style="background:rgba(249,115,22,0.15);color:var(--orange);font-size:0.65rem;">
+          ${r.worker.split(' ').map(x=>x[0]).join('')}
+        </div>
+        <div style="flex:1;">
+          <div class="fs-sm text-primary">${r.worker}</div>
+          <div style="font-size:0.68rem;color:var(--text-muted);">${r.uid} · ${r.station}</div>
+        </div>
+        <span class="badge ${r.result==='granted'?'safe':'danger'}">${r.result==='granted'?'✓ Izin':'✗ Tolak'}</span>
+      </div>`;
+  });
+
+  // Scan modal
+  const scanList = document.getElementById('scan-list');
+  WORKERS.forEach(w => {
+    const btn = document.createElement('button');
+    btn.className = 'btn btn-secondary';
+    btn.style.justifyContent = 'flex-start';
+    btn.innerHTML = `<div class="avatar" style="background:${w.color}22;color:${w.color};">${w.avatar}</div> ${w.name} <span class="font-mono" style="margin-left:auto;font-size:0.72rem;color:var(--cyan);">${w.uid}</span>`;
+    btn.onclick = () => {
+      const result = w.status === 'active' ? 'DITERIMA ✅' : 'DITOLAK ❌ — Akses Dicabut';
+      showToast(`RFID Scan: ${w.name} → ${result}`, w.status === 'active' ? 'success' : 'danger');
+      closeModal('modal-scan');
+    };
+    scanList.appendChild(btn);
+  });
+
+  // Cert donut chart
+  const ctx = document.getElementById('certChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Valid', 'Kadaluarsa', 'Diblokir'],
+      datasets: [{
+        data: [5, 1, 1],
+        backgroundColor: ['rgba(34,197,94,0.8)', 'rgba(239,68,68,0.7)', 'rgba(234,179,8,0.7)'],
+        borderColor: ['#22c55e','#ef4444','#eab308'],
+        borderWidth: 2,
+        hoverOffset: 6,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      cutout: '68%',
+      plugins: {
+        legend: { position: 'right', labels: { color: '#8899bb', font: { family: 'Inter', size: 11 }, padding: 12, boxWidth: 12 } },
+        tooltip: {
+          backgroundColor: '#131c2e',
+          borderColor: 'rgba(99,130,190,0.25)',
+          borderWidth: 1,
+          titleColor: '#e8edf7',
+          bodyColor: '#8899bb',
+        }
+      }
+    }
+  });
+});
+</script>
+</body>
+</html>
