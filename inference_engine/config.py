@@ -4,13 +4,13 @@ Ubah nilai-nilai di sini sesuai setup hardware kamu.
 """
 
 # MODEL
-MODEL_PATH = "inference_engine/best.pt"
+MODEL_PATH = "best.pt"
 CONFIDENCE_THRESHOLD = 0.50
 IOU_THRESHOLD = 0.45
 
 # KAMERA
 # "webcam" = USB/laptop camera, "video" = file .mp4
-CAMERA_MODE  = "webcam"
+CAMERA_MODE  = "video"
 WEBCAM_INDEX = 0
 VIDEO_PATH   = "sample_video.mp4"
 FRAME_WIDTH  = 1280

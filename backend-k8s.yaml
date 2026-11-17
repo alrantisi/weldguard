@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: weldguard-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: weldguard-backend
+  template:
+    metadata:
+      labels:
+        app: weldguard-backend
+    spec:
+      containers:
+      - name: weldguard-backend
+        image: docker.io/library/weldguard-backend:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - name: snapshots
+          mountPath: /app/snapshots
+      volumes:
+      - name: snapshots
+        hostPath:
+          path: /mnt/weldguard/snapshots
+          type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: weldguard-backend-svc
+spec:
+  type: NodePort
+  selector:
+    app: weldguard-backend
+  ports:
+  - port: 8000
+    targetPort: 8000
+    nodePort: 30800
