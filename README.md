@@ -31,8 +31,10 @@ Settings live in `config.py`: set `CAMERA_MODE` to `"webcam"` or `"video"`, and 
 The cluster runs on Ubuntu Server 24.04 with containerd and no external image registry, so images are built with Docker and imported directly into containerd:
 
 ```bash
-docker build -t <image-name> ./backend        # repeat for ./dashboard
-docker save <image-name> | sudo ctr -n k8s.io images import -
+docker build -t weldguard-backend ./backend
+docker build -t weldguard-dashboard ./dashboard
+docker save weldguard-backend | sudo ctr -n k8s.io images import -
+docker save weldguard-dashboard | sudo ctr -n k8s.io images import -
 kubectl apply -f backend-k8s.yaml -f dashboard-k8s.yaml
 ```
 
